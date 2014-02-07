@@ -1,4 +1,24 @@
 Bubble::Application.routes.draw do
+  resources :tweets
+
+  resources :matches
+
+  resources :interests
+
+  resources :users
+
+  resources :apis
+
+  get 'api/getLocalTweets' =>  'api#getLocalTweets'
+  get 'api/loadTweets' =>  'api#loadTweets'
+  get 'api/getMatches' =>  'api#getMatches'
+  get 'api/getMatch' =>  'api#getMatch'
+  post 'api/likeTweet' => 'api#likeTweet'
+  post 'api/dislikeTweet' => 'api#dislikeTweet'
+  post 'api/createUser' => 'api#createUser'
+  get 'api/tryLogin' => 'api#tryLogin'
+
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
