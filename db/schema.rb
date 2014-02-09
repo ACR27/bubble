@@ -11,22 +11,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140208012557) do
+ActiveRecord::Schema.define(version: 20140209084252) do
 
   create_table "interests", force: true do |t|
-    t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "tweet_id"
     t.integer  "like_count"
+    t.string   "user_id"
   end
 
   create_table "matches", force: true do |t|
-    t.integer  "user1"
-    t.integer  "user2"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "compatability"
+    t.string   "user1"
+    t.string   "use2"
   end
 
   create_table "tweets", force: true do |t|
@@ -37,8 +37,8 @@ ActiveRecord::Schema.define(version: 20140208012557) do
     t.datetime "updated_at"
     t.float    "latitude"
     t.float    "longitude"
-    t.integer  "twitter_id"
-    t.integer  "user_twitter_id"
+    t.string   "twitter_id"
+    t.string   "user_twitter_id"
   end
 
   create_table "users", force: true do |t|

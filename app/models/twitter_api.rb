@@ -38,7 +38,7 @@ class TwitterAPI
 
 
 		# LOADS ONLY RECENT TWEETS FOR A USER
-		def load_tweets_for_user(user_id)
+			def load_tweets_for_user(user_id)
 			authenticate
 			max_id = Tweet.get_max_tweet_id(user_id) || @@max_id
 
