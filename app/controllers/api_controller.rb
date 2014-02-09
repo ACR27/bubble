@@ -14,20 +14,30 @@ class ApiController < ApplicationController
 		render json: TwitterAPI.load_tweets("47.613959","-122.349214","10mi")
 	end
 
-	# GET /api/getMatches
-	def getMatches
-		render json: "getting matches"
+	def loadUserTweets
+		render json: TwitterAPI.load_tweets_for_user(params[:twitter_id])
 	end
 
-	#GET /api/getMatch
-	def getMatch
-		render json: "getting single match"
+	# Gets three tweets from the passed in user.
+	# GET /api/getThreeTweets
+	def getThreeTweets
+		render json: TwitterAPI.get_top_3_tweets(params[:twitter_id])
+	end
+
+	def loadBulkTweets
+		render json: TwitterAPI.load_bulk_tweets(params[:twitter_id])
+	end
+
+	#GET /api/getMatches
+	def getMatches
+		matches = Match.get_matches_for_user(params[:twitter_id])
+		render json: matches
 	end
 
 	#GET /api/getMatchCount
 	# Gets the number of matches
 	def getMatchCount
-		render json: Match.count(:user1 => params[:user_id])
+		render json: Match.count(:user1 => params[:twitter_id])
 	end
 
 	#POST /api/likeTweet

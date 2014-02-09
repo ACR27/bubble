@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140207015349) do
+ActiveRecord::Schema.define(version: 20140208012557) do
 
   create_table "interests", force: true do |t|
     t.integer  "user_id"
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 20140207015349) do
     t.integer  "user2"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "compatability"
   end
 
   create_table "tweets", force: true do |t|
@@ -37,6 +38,7 @@ ActiveRecord::Schema.define(version: 20140207015349) do
     t.float    "latitude"
     t.float    "longitude"
     t.integer  "twitter_id"
+    t.integer  "user_twitter_id"
   end
 
   create_table "users", force: true do |t|

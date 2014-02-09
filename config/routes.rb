@@ -11,8 +11,10 @@ Bubble::Application.routes.draw do
 
   get 'api/getLocalTweets' =>  'api#getLocalTweets'
   get 'api/loadTweets' =>  'api#loadTweets'
+  get 'api/loadUserTweets' =>  'api#loadUserTweets'
   get 'api/getMatches' =>  'api#getMatches'
-  get 'api/getMatch' =>  'api#getMatch'
+  get 'api/getThreeTweets' =>  'api#getThreeTweets'
+  get 'api/loadBulkTweets' =>  'api#loadBulkTweets'
   post 'api/likeTweet' => 'api#likeTweet'
   post 'api/dislikeTweet' => 'api#dislikeTweet'
   post 'api/createUser' => 'api#createUser'

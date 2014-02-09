@@ -32,28 +32,64 @@ class TwitterAPI
 			else
 				tweets = Tweet.all.limit(20)
 			end
-			convert_tweets_to_view_models(tweets)
+			Tweet.convert_tweets_to_view_models(tweets)
 		end
 
-		# Takes a list of active record tweets and converts them to view models.
-		def convert_tweets_to_view_models(tweets)
+
+
+		# LOADS ONLY RECENT TWEETS FOR A USER
+		def load_tweets_for_user(user_id)
+			authenticate
+			max_id = Tweet.get_max_tweet_id(user_id) || @@max_id
+
 			response = []
-			tweets.each do |tweet|
-				t = TweetViewModel.new
-				response << t.initFromActiveRecord(tweet)
+			puts max_id
+			result = @@client.user_timeline(user_id.to_i, :since_id => max_id)
+			result.each do |tweet|
+				begin
+					newTweet = Tweet.new
+					newTweet = newTweet.init(tweet)
+					unless newTweet.is_retweet_or_mention
+						newTweet.save!
+					else
+						puts "Found Retweet #{newTweet.text}"
+					end
+				rescue
+					puts "COULD NOT SAVE"
+				else
+					t = TweetViewModel.new
+					response << t.initFromActiveRecord(newTweet)
+				end
 			end
 			response
 		end
 
+		# LOAD ALL TWEETS FOR A USER
+		def load_bulk_tweets(user_id)
+			authenticate
+
+			response = []
+			result = @@client.user_timeline(user_id.to_i)
+			result.each do |tweet|
+				begin
+					newTweet = Tweet.new
+					newTweet = newTweet.init(tweet)
+					newTweet.save!
+				rescue
+					puts "COULD NOT SAVE"
+				else
+					t = TweetViewModel.new
+					response << t.initFromActiveRecord(newTweet)
+				end
+			end
+			response
+		end
+
+		# LOAD LOCAL TWEETS
 		def load_tweets(lat,lng,radius)
 			authenticate
 			response = []
-			last_tweet = Tweet.order("twitter_id DESC").select(:twitter_id).first
-			if last_tweet.nil?
-				max_id = @@max_id
-			else
-				max_id = last_tweet.twitter_id
-			end
+			max_id = Tweet.get_max_tweet_id(nil) || @@max_id
 			puts "MAX_ID #{max_id.inspect}"
 			begin
 				result = @@client.search('lang:en',
@@ -71,17 +107,27 @@ class TwitterAPI
 				end
 				begin
 					newTweet = Tweet.new
-					newTweet = newTweet.initFromJSON(tweet)
-					newTweet.save!
-				rescue
-					puts "COULD NOT SAVE"
+					newTweet = newTweet.init(tweet)
+					unless newTweet.is_retweet_or_mention
+						newTweet.save!
+					else
+						puts "Found Retweet #{newTweet.text}"
+					end
+				rescue Exception => exc
+					puts exc.message
 				else
 					t = TweetViewModel.new
-					response << t.initFromActiveRecord(tweet)
+					response << t.initFromActiveRecord(newTweet)
 				end
 			end
 
 			response
 		end
+
+		def get_top_3_tweets(user_id)
+			tweets = Tweet.where(:user_twitter_id => user_id).order("twitter_id DESC").limit(3)
+			Tweet.convert_tweets_to_view_models(tweets)
+		end
 	end
+
 end
